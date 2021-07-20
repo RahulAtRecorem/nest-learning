@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  backend:
+    container_name: learning_backend
+    restart: always
+    build: .
+    environment:
+      - APP_ENV=development
+      - APP_PORT=9000
+    volumes:
+      - ./src:/var/www/learning/src
+      - ./test:/var/www/learning/test
+    working_dir: /var/www/myapp
+    ports:
+      - '9001:9000'
+    links:
+      - postgres
+    depends_on:
+      - postgres
+  postgres:
+    container_name: learning_postgres
+    restart: always
+    image: postgres:13.3-alpine3.14
+    environment:
+      - POSTGRES_USER=learning
+      - POSTGRES_PASSWORD=learning
+      - POSTGRES_DB=learning
+    ports:
+      - '5435:5432'
+    volumes:
+      - learning_postgres_data:/var/lib/postgres
+
+volumes:
+  myapp_mysql_data:
+
+networks:
+  default:
+    external:
+      name: learning
